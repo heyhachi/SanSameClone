@@ -3,12 +3,17 @@ extends Area2D
 
 signal get_panel(pos: Vector3)
 
+## パネルのスプライト
 @onready var skin: Sprite2D = $Skin
 
+## パネルの色
 var color := Global.PanelColor.RED:
 	set = set_color
 
+## 盤面グリッド上の座標
 var grid_position := Vector3.ZERO
+## 移動アニメーション制御用Tween
+var _tween: Tween
 
 var textures = {
 	Global.PanelColor.EMPTY: null,
@@ -29,10 +34,10 @@ var color_name = {
 }
 
 
-func _input_event(viewport: Viewport, event: InputEvent, shape_idx: int) -> void:
+func _input_event(viewport: Viewport, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseMotion or event is InputEventMouseButton:
 		if event is InputEventMouseButton and event.is_action_pressed("panel_decision"):
-			print("Node clicked:%s,%d,%s" % [color_name[self.color], shape_idx, self.name])  # このノードがクリックされた
+			print("Node clicked:%s,(%d,%d,%d),%s" % [color_name[self.color], grid_position.x, grid_position.y, grid_position.z, self.name])
 			get_panel.emit(grid_position)
 			viewport.set_input_as_handled()
 			queue_free()
@@ -42,15 +47,24 @@ func _ready() -> void:
 	pass
 
 
-func update_position(tile_size: int, offset: Vector3 = Vector3.ZERO) -> void:
+func update_position(tile_size: int, offset: Vector3 = Vector3.ZERO, is_instant: bool = true) -> void:
 	var pos = Vector2(grid_position.x, grid_position.y)
 	var offs = Vector2(offset.x, offset.y)
-	position = pos * tile_size + offs
+	
+	if is_instant:
+		position = pos * tile_size + offs
+	else:
+		var desired_pos = pos * tile_size + offs
+		if _tween != null and _tween.is_running():
+			_tween.stop()
+		_tween = create_tween()
+		_tween.tween_property(self, "position", desired_pos, 0.2)
+		_tween.play()
 
 
 func move_down() -> void:
 	grid_position.y += 1
-	update_position(Global.PANEL_SIZE, Vector3(-grid_position.z * 8, grid_position.z * 8, grid_position.z))
+	update_position(Global.PANEL_SIZE, Vector3(-grid_position.z * Global.PANEL_LAYER_OFFSET, grid_position.z * Global.PANEL_LAYER_OFFSET, grid_position.z))
 
 
 func set_color(new_color: Global.PanelColor) -> void:

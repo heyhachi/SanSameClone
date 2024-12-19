@@ -9,4 +9,5 @@ enum PanelColor {
 	MAGENTA,
 }
 
-const PANEL_SIZE := 56
+const PANEL_SIZE := 64
+const PANEL_LAYER_OFFSET := 12

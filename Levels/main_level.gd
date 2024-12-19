@@ -10,10 +10,15 @@ extends Node2D
 var panel_scene: PackedScene = preload("res://Panels/panel_item.tscn")
 var panel_array := []
 
-
 func _ready() -> void:
 	randomize()
 	# 3次元配列を初期化
+	init_field()
+	# フィールドサイズ確認
+	print("x,y,z:%d,%d,%d" % [panel_array.size(), panel_array[0].size(), panel_array[0][0].size()])
+
+
+func init_field() -> void:
 	for x in range(horizontal_count):
 		var y_array = []
 		for y in range(vertical_count):
@@ -27,25 +32,18 @@ func _ready() -> void:
 						panel_layout_base.add_child(item)
 						item.color = color
 						item.grid_position += Vector3(x, y, z)
-						item.update_position(Global.PANEL_SIZE, Vector3(-z * 8, z * 8, z))
-						item.z_index = -z
+						item.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0))
+						item.z_index = z_count - z
 						item.get_panel.connect(func(pos: Vector3) -> void: panel_array[pos.x][pos.y][pos.z] = null)
 				z_array.append(item)
 			y_array.append(z_array)
 		panel_array.append(y_array)
 
-	# フィールドサイズ確認
-	print(panel_array.size())
-	print(panel_array[0].size())
-	print(panel_array[0][0].size())
-
-
-# 	panel_array[1][2][0] = PanelColor.RED
-# 	print(panel_array[1][2][0]) # 出力: 0 (RED)
-
 
 func _process(_delta: float) -> void:
-	apply_gravity()
+	move_inside()
+	move_down()
+	move_left()
 
 
 func get_random_color() -> Global.PanelColor:
@@ -58,27 +56,60 @@ func is_cell_occupied(x: int, y: int, z: int) -> bool:
 	return panel_array[x][y][z] != null
 
 
+## パネルを奥方向へスライド
 func move_inside() -> void:
 	for x in panel_array.size():
 		for y in panel_array[0].size():
 			for z in panel_array[0][0].size() - 1:
-				#下方向への移動
-				if panel_array[x][y][z] != null and panel_array[x][y][z + 1] == null:
+				#奥方向への移動
+				var inside_z = z + 1
+				if panel_array[x][y][z] != null and panel_array[x][y][inside_z] == null:
 					var panel = panel_array[x][y][z]
+					panel.z_index = z_count - inside_z
+					panel.grid_position += Vector3(0, 0, 1)
+					panel.update_position(Global.PANEL_SIZE, Vector3(-inside_z * Global.PANEL_LAYER_OFFSET, inside_z * Global.PANEL_LAYER_OFFSET, 0), false)
+					panel_array[x][y][inside_z] = panel
 					panel_array[x][y][z] = null
-					panel_array[x][y][z + 1] = panel
-					panel.grid_position += Vector3(0, 1, 0)
-					panel.update_position(Global.PANEL_SIZE, Vector3(-z * 8, z * 8, z))
 
 
-func apply_gravity() -> void:
+## パネルを下方向へスライド
+func move_down() -> void:
 	for x in panel_array.size():
 		for y in panel_array[0].size() - 1:
 			for z in panel_array[0][0].size():
 				#下方向への移動
-				if panel_array[x][y][z] != null and panel_array[x][y + 1][z] == null:
+				var down_y = y + 1
+				if panel_array[x][y][z] != null and panel_array[x][down_y][z] == null:
 					var panel = panel_array[x][y][z]
-					panel_array[x][y][z] = null
-					panel_array[x][y + 1][z] = panel
 					panel.grid_position += Vector3(0, 1, 0)
-					panel.update_position(Global.PANEL_SIZE, Vector3(-z * 8, z * 8, z))
+					panel.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0), false)
+					panel_array[x][down_y][z] = panel
+					panel_array[x][y][z] = null
+
+
+## 任意の列が空どうか
+func is_empty_column(index: int) -> bool:
+	for y in panel_array[0].size():
+		for z in panel_array[0][0].size():
+			if panel_array[index][y][z] != null:
+				return false
+
+	return true
+
+
+## パネルを左方向へスライド
+func move_left() -> void:
+	for x in panel_array.size() - 1:
+		#一列丸ごと空なら左スライド
+		if not is_empty_column(x):
+			continue
+		for y in panel_array[0].size():
+			for z in panel_array[0][0].size():
+				#左方向への移動
+				var right_x = x + 1
+				if panel_array[x][y][z] == null and panel_array[right_x][y][z] != null:
+					var panel = panel_array[right_x][y][z]
+					panel.grid_position += Vector3(-1, 0, 0)
+					panel.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0), false)
+					panel_array[x][y][z] = panel
+					panel_array[right_x][y][z] = null
