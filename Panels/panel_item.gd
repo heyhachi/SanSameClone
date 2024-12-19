@@ -2,6 +2,7 @@ class_name PanelItem
 extends Area2D
 
 signal get_panel(pos: Vector3)
+signal select_panel(pos: Vector3)
 
 ## パネルのスプライト
 @onready var skin: Sprite2D = $Skin
@@ -44,7 +45,10 @@ func _input_event(viewport: Viewport, event: InputEvent, _shape_idx: int) -> voi
 
 
 func _ready() -> void:
-	pass
+	mouse_entered.connect(
+		func () -> void:
+			select_panel.emit(grid_position)
+	)
 
 
 func update_position(tile_size: int, offset: Vector3 = Vector3.ZERO, is_instant: bool = true) -> void:

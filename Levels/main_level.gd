@@ -10,6 +10,7 @@ extends Node2D
 var panel_scene: PackedScene = preload("res://Panels/panel_item.tscn")
 var panel_array := []
 
+
 func _ready() -> void:
 	randomize()
 	# 3次元配列を初期化
@@ -113,3 +114,95 @@ func move_left() -> void:
 					panel.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0), false)
 					panel_array[x][y][z] = panel
 					panel_array[right_x][y][z] = null
+
+
+func is_same_color_adjacent(x: int, y: int, z: int) -> bool:
+	# 配列の範囲外チェック
+	if x < 0 or x >= horizontal_count or y < 0 or y >= vertical_count or z < 0 or z >= z_count:
+		return false
+
+	# 現在のパネルを取得
+	var current_panel = panel_array[x][y][z]
+	if current_panel == null:
+		return false  # パネルが存在しない場合は終了
+
+	# 現在のパネルの色を取得
+	var current_color = current_panel.color
+
+	# 隣接するパネルをチェック
+	var directions = [
+		Vector3(1, 0, 0),  # 右
+		Vector3(-1, 0, 0),  # 左
+		Vector3(0, 1, 0),  # 下
+		Vector3(0, -1, 0),  # 上
+		Vector3(0, 0, 1),  # 奥
+		Vector3(0, 0, -1),  # 手前
+	]
+
+	for direction in directions:
+		var nx = x + direction.x
+		var ny = y + direction.y
+		var nz = z + direction.z
+
+		# 範囲外の場合はスキップ
+		if nx < 0 or nx >= horizontal_count or ny < 0 or ny >= vertical_count or nz < 0 or nz >= z_count:
+			continue
+
+		# 隣接パネルを取得
+		var adjacent_panel = panel_array[nx][ny][nz]
+		if adjacent_panel != null and adjacent_panel.color == current_color:
+			return true  # 隣接パネルと同じ色の場合
+
+	return false  # 隣接する同じ色のパネルがない場合
+
+
+func check_adjacent_chain(x: int, y: int, z: int, visited: Dictionary = {}) -> Array:
+	# 配列範囲外チェック、または訪問済みの座標はスキップ
+	if x < 0 or x >= horizontal_count or y < 0 or y >= vertical_count or z < 0 or z >= z_count:
+		return []
+
+	var key = "%d,%d,%d" % [x, y, z]
+	if visited.has(key):
+		return []  # すでに訪問済みならスキップ
+
+	# 現在のパネルを取得
+	var current_panel = panel_array[x][y][z]
+	if current_panel == null:
+		return []  # パネルが存在しない場合は終了
+
+	# 現在のパネルの色を取得
+	var current_color = current_panel.color
+
+	# 現在の座標を訪問済みに追加
+	visited[key] = true
+
+	# 隣接する方向
+	var directions = [
+		Vector3(1, 0, 0),  # 右
+		Vector3(-1, 0, 0),  # 左
+		Vector3(0, 1, 0),  # 下
+		Vector3(0, -1, 0),  # 上
+		Vector3(0, 0, 1),  # 奥
+		Vector3(0, 0, -1),  # 手前
+	]
+
+	# 現在のパネルを結果に追加
+	var connected_panels = [Vector3(x, y, z)]
+
+	# 隣接方向を探索
+	for direction in directions:
+		var nx = x + direction.x
+		var ny = y + direction.y
+		var nz = z + direction.z
+
+		# 範囲外はスキップ
+		if nx < 0 or nx >= horizontal_count or ny < 0 or ny >= vertical_count or nz < 0 or nz >= z_count:
+			continue
+
+		# 隣接するパネルを取得
+		var adjacent_panel = panel_array[nx][ny][nz]
+		if adjacent_panel != null and adjacent_panel.color == current_color:
+			# 再帰的にチェーンを探索
+			connected_panels += check_adjacent_chain(nx, ny, nz, visited)
+
+	return connected_panels
