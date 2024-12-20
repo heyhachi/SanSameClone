@@ -49,6 +49,10 @@ func _ready() -> void:
 		#func () -> void:
 			#select_panel.emit(grid_position)
 	#)
+	#var shader = ShaderMaterial.new()
+	#shader.shader = preload("res://Panels/outline.gdshader")
+	#material = shader
+	#
 	pass
 
 

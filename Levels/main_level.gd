@@ -2,6 +2,7 @@ class_name MainLevel
 extends Node2D
 
 @onready var panel_layout_base: Marker2D = $PanelLayoutBase
+@onready var ignore_input_timer: Timer = $IgnoreInputTimer
 
 @export var horizontal_count := 10
 @export var vertical_count := 10
@@ -10,7 +11,8 @@ extends Node2D
 var panel_scene: PackedScene = preload("res://Panels/panel_item.tscn")
 var panel_array := []
 var mouse_position := Vector2.ZERO
-
+var selected_panels: Array[PanelItem] = []
+var can_input := true
 
 func _ready() -> void:
 	randomize()
@@ -61,11 +63,25 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	hilight_panel()
+	
 	if Input.is_action_just_pressed("panel_decision"):
 		on_panel_clicked()
 
 
-func on_panel_clicked() -> void:
+#カーソル下のパネルと、それと一緒に消せるパネルをハイライトする
+func hilight_panel() -> void:
+	selected_panels.clear()
+	#if !can_input: return
+	
+	#ハイライトクリア
+	for x in horizontal_count:
+		for y in vertical_count:
+			for z in z_count:
+				var panel = panel_array[x][y][z]
+				if panel != null:
+					panel.modulate = 0xFFFFFFFF
+	
 	var space_state := get_world_2d().direct_space_state
 	var query := PhysicsPointQueryParameters2D.new()
 	query.position = mouse_position
@@ -76,30 +92,84 @@ func on_panel_clicked() -> void:
 
 	#検出したノード
 	var result := space_state.intersect_point(query)
-	if result:
-		var colliders: Array[PanelItem] = []
-		for i in result:
-			if i.collider is PanelItem:
-				colliders.append(i.collider)
+	if result == null or result.size() == 0: return
+	
+	var colliders: Array[PanelItem] = []
+	for i in result:
+		if i.collider is PanelItem:
+			colliders.append(i.collider)
+				
+	#grid_positionのZ座標でソートする
+	colliders.sort_custom(
+		func(a:PanelItem, b:PanelItem) -> bool:
+			if a.grid_position.z < b.grid_position.z:
+				return true
+			return false
+	)
+	var visited := {}
+	var chained := check_adjacent_chain(
+		colliders[0].grid_position.x, 
+		colliders[0].grid_position.y, 
+		colliders[0].grid_position.z,
+		visited)
+	
+	
+	for v in chained:
+		panel_array[v.x][v.y][v.z].modulate = Color(0.5,0.5,0.5)
+		selected_panels.append(panel_array[v.x][v.y][v.z])
+
+
+func on_panel_clicked() -> void:
+	if selected_panels.size() == 0:
+		return
 		
-		#grid_positionのZ座標でソートする
-		colliders.sort_custom(
-			func(a:PanelItem, b:PanelItem) -> bool:
-				if a.grid_position.z < b.grid_position.z:
-					return true
-				return false
-		)
+	if can_input == false:
+		return
 		
-		#Z座標上の一番上のパネルのみ取り除く
-		var panel := colliders[0]
-		if panel:
-			panel_array[panel.grid_position.x][panel.grid_position.y][panel.grid_position.z] = null
-			panel.queue_free()
-			
-		#for item in result:
-			#var panel := item.collider as PanelItem
-			#print("(%d:%d:%d)=%s" % [panel.grid_position.x, panel.grid_position.y, panel.grid_position.z, panel.get_color_name()])
-		#print("")
+	if selected_panels.size() <= 1:
+		return
+		
+	for i in selected_panels:
+		i.queue_free()
+	
+	can_input = false
+	set_process_input(false)
+	ignore_input_timer.wait_time = 1.0
+	ignore_input_timer.start()
+	ignore_input_timer.timeout.connect(
+		func() -> void:
+			can_input = true
+			set_process_input(true)
+	)
+	#var space_state := get_world_2d().direct_space_state
+	#var query := PhysicsPointQueryParameters2D.new()
+	#query.position = mouse_position
+	#query.collide_with_areas = true
+	#query.collide_with_bodies = false
+	#query.collision_mask = 0x1
+	#query.exclude = [self]
+#
+	##検出したノード
+	#var result := space_state.intersect_point(query)
+	#if result:
+		#var colliders: Array[PanelItem] = []
+		#for i in result:
+			#if i.collider is PanelItem:
+				#colliders.append(i.collider)
+		#
+		##grid_positionのZ座標でソートする
+		#colliders.sort_custom(
+			#func(a:PanelItem, b:PanelItem) -> bool:
+				#if a.grid_position.z < b.grid_position.z:
+					#return true
+				#return false
+		#)
+		#
+		##Z座標上の一番上のパネルのみ取り除く
+		#var panel := colliders[0]
+		#if panel:
+			#panel_array[panel.grid_position.x][panel.grid_position.y][panel.grid_position.z] = null
+			#panel.queue_free()			
 
 
 func get_random_color() -> Global.PanelColor:
@@ -211,6 +281,7 @@ func is_same_color_adjacent(x: int, y: int, z: int) -> bool:
 	return false  # 隣接する同じ色のパネルがない場合
 
 
+## 隣接するパネルを再帰的に収集する
 func check_adjacent_chain(x: int, y: int, z: int, visited: Dictionary = {}) -> Array:
 	# 配列範囲外チェック、または訪問済みの座標はスキップ
 	if x < 0 or x >= horizontal_count or y < 0 or y >= vertical_count or z < 0 or z >= z_count:
