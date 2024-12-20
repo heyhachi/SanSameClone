@@ -11,12 +11,23 @@ var panel_scene: PackedScene = preload("res://Panels/panel_item.tscn")
 var panel_array := []
 var mouse_position := Vector2.ZERO
 
+
 func _ready() -> void:
 	randomize()
 	# 3次元配列を初期化
 	init_field()
 	# フィールドサイズ確認
 	print("x,y,z:%d,%d,%d" % [panel_array.size(), panel_array[0].size(), panel_array[0][0].size()])
+	
+	#var arr = [3,4,1,5,9]
+	#arr.sort_custom(
+		#func(a: int, b: int) -> bool:
+			#if a < b:
+				#return true
+			#return false
+	#)
+	#print(arr)
+	
 
 
 func init_field() -> void:
@@ -45,7 +56,8 @@ func _process(_delta: float) -> void:
 	move_inside()
 	move_down()
 	move_left()
-	mouse_position = get_global_mouse_position()
+	#mouse_position = get_global_mouse_position()
+	mouse_position = get_viewport().get_mouse_position()
 
 
 func _physics_process(delta: float) -> void:
@@ -58,16 +70,36 @@ func on_panel_clicked() -> void:
 	var query := PhysicsPointQueryParameters2D.new()
 	query.position = mouse_position
 	query.collide_with_areas = true
-	query.collide_with_bodies = true
+	query.collide_with_bodies = false
 	query.collision_mask = 0x1
 	query.exclude = [self]
-	
+
+	#検出したノード
 	var result := space_state.intersect_point(query)
 	if result:
-		var panel := result[0].collider as PanelItem
+		var colliders: Array[PanelItem] = []
+		for i in result:
+			if i.collider is PanelItem:
+				colliders.append(i.collider)
+		
+		#grid_positionのZ座標でソートする
+		colliders.sort_custom(
+			func(a:PanelItem, b:PanelItem) -> bool:
+				if a.grid_position.z < b.grid_position.z:
+					return true
+				return false
+		)
+		
+		#Z座標上の一番上のパネルのみ取り除く
+		var panel := colliders[0]
 		if panel:
 			panel_array[panel.grid_position.x][panel.grid_position.y][panel.grid_position.z] = null
 			panel.queue_free()
+			
+		#for item in result:
+			#var panel := item.collider as PanelItem
+			#print("(%d:%d:%d)=%s" % [panel.grid_position.x, panel.grid_position.y, panel.grid_position.z, panel.get_color_name()])
+		#print("")
 
 
 func get_random_color() -> Global.PanelColor:

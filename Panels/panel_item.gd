@@ -75,3 +75,7 @@ func move_down() -> void:
 func set_color(new_color: Global.PanelColor) -> void:
 	color = new_color
 	skin.texture = textures[new_color]
+	
+	
+func get_color_name() -> String:
+	return color_name[self.color]
