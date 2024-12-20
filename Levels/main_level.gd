@@ -13,6 +13,7 @@ var panel_array := []
 var mouse_position := Vector2.ZERO
 var selected_panels: Array[PanelItem] = []
 var can_input := true
+var is_game_over := false
 
 func _ready() -> void:
 	randomize()
@@ -55,14 +56,34 @@ func init_field() -> void:
 
 
 func _process(_delta: float) -> void:
+	if is_game_over:
+		return
 	move_inside()
 	move_down()
 	move_left()
 	#mouse_position = get_global_mouse_position()
 	mouse_position = get_viewport().get_mouse_position()
+	if !can_continue_game():
+		is_game_over = true
+		print("もう消せるパネルはありません")
+		set_process(false)
+		set_physics_process(false)
+		
 
 
-func _physics_process(delta: float) -> void:
+func can_continue_game() -> bool:
+	for x in range(horizontal_count):
+		for y in range(vertical_count):
+			for z in range(z_count):
+				if is_same_color_adjacent(x,y,z):
+					return true
+	return false
+
+
+func _physics_process(_delta: float) -> void:
+	if is_game_over:
+		return
+		
 	hilight_panel()
 	
 	if Input.is_action_just_pressed("panel_decision"):
