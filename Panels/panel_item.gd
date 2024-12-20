@@ -35,20 +35,21 @@ var color_name = {
 }
 
 
-func _input_event(viewport: Viewport, event: InputEvent, _shape_idx: int) -> void:
-	if event is InputEventMouseMotion or event is InputEventMouseButton:
-		if event is InputEventMouseButton and event.is_action_pressed("panel_decision"):
-			print("Node clicked:%s,(%d,%d,%d),%s" % [color_name[self.color], grid_position.x, grid_position.y, grid_position.z, self.name])
-			get_panel.emit(grid_position)
-			viewport.set_input_as_handled()
-			queue_free()
+#func _input_event(viewport: Viewport, event: InputEvent, _shape_idx: int) -> void:
+	#if event is InputEventMouseMotion or event is InputEventMouseButton:
+		#if event is InputEventMouseButton and event.is_action_pressed("panel_decision"):
+			#print("Node clicked:%s,(%d,%d,%d),%s" % [color_name[self.color], grid_position.x, grid_position.y, grid_position.z, self.name])
+			#get_panel.emit(grid_position)
+			#viewport.set_input_as_handled()
+			#queue_free()
 
 
 func _ready() -> void:
-	mouse_entered.connect(
-		func () -> void:
-			select_panel.emit(grid_position)
-	)
+	#mouse_entered.connect(
+		#func () -> void:
+			#select_panel.emit(grid_position)
+	#)
+	pass
 
 
 func update_position(tile_size: int, offset: Vector3 = Vector3.ZERO, is_instant: bool = true) -> void:

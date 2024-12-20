@@ -9,7 +9,7 @@ extends Node2D
 
 var panel_scene: PackedScene = preload("res://Panels/panel_item.tscn")
 var panel_array := []
-
+var mouse_position := Vector2.ZERO
 
 func _ready() -> void:
 	randomize()
@@ -21,9 +21,9 @@ func _ready() -> void:
 
 func init_field() -> void:
 	for x in range(horizontal_count):
-		var y_array = []
+		var y_array := []
 		for y in range(vertical_count):
-			var z_array = []
+			var z_array := []
 			for z in range(z_count):
 				var color := get_random_color()
 				var item = null
@@ -45,6 +45,29 @@ func _process(_delta: float) -> void:
 	move_inside()
 	move_down()
 	move_left()
+	mouse_position = get_global_mouse_position()
+
+
+func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed("panel_decision"):
+		on_panel_clicked()
+
+
+func on_panel_clicked() -> void:
+	var space_state := get_world_2d().direct_space_state
+	var query := PhysicsPointQueryParameters2D.new()
+	query.position = mouse_position
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	query.collision_mask = 0x1
+	query.exclude = [self]
+	
+	var result := space_state.intersect_point(query)
+	if result:
+		var panel := result[0].collider as PanelItem
+		if panel:
+			panel_array[panel.grid_position.x][panel.grid_position.y][panel.grid_position.z] = null
+			panel.queue_free()
 
 
 func get_random_color() -> Global.PanelColor:
@@ -61,31 +84,31 @@ func is_cell_occupied(x: int, y: int, z: int) -> bool:
 func move_inside() -> void:
 	for x in panel_array.size():
 		for y in panel_array[0].size():
-			for z in panel_array[0][0].size() - 1:
+			for z in range(panel_array[0][0].size() - 1, 0, -1):
 				#奥方向への移動
-				var inside_z = z + 1
-				if panel_array[x][y][z] != null and panel_array[x][y][inside_z] == null:
-					var panel = panel_array[x][y][z]
-					panel.z_index = z_count - inside_z
+				var upper_z = z - 1
+				if panel_array[x][y][z] == null and panel_array[x][y][upper_z] != null:
+					var panel = panel_array[x][y][upper_z]
+					panel.z_index -= 1
 					panel.grid_position += Vector3(0, 0, 1)
-					panel.update_position(Global.PANEL_SIZE, Vector3(-inside_z * Global.PANEL_LAYER_OFFSET, inside_z * Global.PANEL_LAYER_OFFSET, 0), false)
-					panel_array[x][y][inside_z] = panel
-					panel_array[x][y][z] = null
+					panel.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0), false)
+					panel_array[x][y][z] = panel
+					panel_array[x][y][upper_z] = null
 
 
 ## パネルを下方向へスライド
 func move_down() -> void:
 	for x in panel_array.size():
-		for y in panel_array[0].size() - 1:
+		for y in range(panel_array[0].size() - 1, 0, -1):
 			for z in panel_array[0][0].size():
 				#下方向への移動
-				var down_y = y + 1
-				if panel_array[x][y][z] != null and panel_array[x][down_y][z] == null:
-					var panel = panel_array[x][y][z]
+				var up_y = y - 1
+				if panel_array[x][y][z] == null and panel_array[x][up_y][z] != null:
+					var panel = panel_array[x][up_y][z]
 					panel.grid_position += Vector3(0, 1, 0)
 					panel.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0), false)
-					panel_array[x][down_y][z] = panel
-					panel_array[x][y][z] = null
+					panel_array[x][y][z] = panel
+					panel_array[x][up_y][z] = null
 
 
 ## 任意の列が空どうか
@@ -107,7 +130,7 @@ func move_left() -> void:
 		for y in panel_array[0].size():
 			for z in panel_array[0][0].size():
 				#左方向への移動
-				var right_x = x + 1
+				var right_x := x + 1
 				if panel_array[x][y][z] == null and panel_array[right_x][y][z] != null:
 					var panel = panel_array[right_x][y][z]
 					panel.grid_position += Vector3(-1, 0, 0)
@@ -130,7 +153,7 @@ func is_same_color_adjacent(x: int, y: int, z: int) -> bool:
 	var current_color = current_panel.color
 
 	# 隣接するパネルをチェック
-	var directions = [
+	var directions := [
 		Vector3(1, 0, 0),  # 右
 		Vector3(-1, 0, 0),  # 左
 		Vector3(0, 1, 0),  # 下
@@ -161,7 +184,7 @@ func check_adjacent_chain(x: int, y: int, z: int, visited: Dictionary = {}) -> A
 	if x < 0 or x >= horizontal_count or y < 0 or y >= vertical_count or z < 0 or z >= z_count:
 		return []
 
-	var key = "%d,%d,%d" % [x, y, z]
+	var key := "%d,%d,%d" % [x, y, z]
 	if visited.has(key):
 		return []  # すでに訪問済みならスキップ
 
@@ -177,7 +200,7 @@ func check_adjacent_chain(x: int, y: int, z: int, visited: Dictionary = {}) -> A
 	visited[key] = true
 
 	# 隣接する方向
-	var directions = [
+	var directions := [
 		Vector3(1, 0, 0),  # 右
 		Vector3(-1, 0, 0),  # 左
 		Vector3(0, 1, 0),  # 下
@@ -187,7 +210,7 @@ func check_adjacent_chain(x: int, y: int, z: int, visited: Dictionary = {}) -> A
 	]
 
 	# 現在のパネルを結果に追加
-	var connected_panels = [Vector3(x, y, z)]
+	var connected_panels := [Vector3(x, y, z)]
 
 	# 隣接方向を探索
 	for direction in directions:
