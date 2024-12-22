@@ -1,5 +1,6 @@
 extends Node
 
+##パネルの色
 enum PanelColor {
 	EMPTY,
 	RED,
@@ -9,5 +10,12 @@ enum PanelColor {
 	MAGENTA,
 }
 
+##グリッドのセルのサイズ
 const PANEL_SIZE := 64
+##パネルを重ねる際のオフセット
 const PANEL_LAYER_OFFSET := 12
+
+##ハイスコア
+var hi_score: int = 0
+##スコア
+var total_score: int = 0
