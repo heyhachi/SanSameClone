@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://c5eicjaijuxns"]
+[gd_scene load_steps=5 format=3 uid="uid://c5eicjaijuxns"]
 
 [ext_resource type="Script" path="res://Screens/license_screen.gd" id="1_5sdte"]
 [ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="2_0tykt"]
+[ext_resource type="FontFile" uid="uid://op2nkvd6vdji" path="res://Assets/Fonts/rounded-mplus-1p-regular.ttf" id="2_bcmo8"]
+
+[sub_resource type="Theme" id="Theme_o6cqn"]
+RichTextLabel/fonts/normal_font = ExtResource("2_bcmo8")
 
 [node name="LicenseScreen" type="Control"]
 layout_mode = 3
@@ -25,6 +29,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_o6cqn")
 color = Color(0, 0, 0, 0.803922)
 
 [node name="LicenseLabel" type="RichTextLabel" parent="."]
