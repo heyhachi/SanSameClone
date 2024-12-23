@@ -31,11 +31,13 @@ var can_input := true
 var is_game_over := false
 ##ゲームオーバースクリーン
 var game_over_screen: PackedScene = preload("res://Screens/gameover_screen.tscn")
+##獲得スコア表示用スクリーン
+var score_popup_screen: PackedScene = preload("res://Screens/score_display.tscn")
 
 
 func _ready() -> void:
 	randomize()
-	total_score_label.text = "%8d"%Global.total_score
+	total_score_label.text = "%8dpts"%Global.total_score
 	# 3次元配列を初期化
 	init_field()
 	Global.initialize()
@@ -98,6 +100,7 @@ func _process(_delta: float) -> void:
 ##ゲームが継続可能かどうか判定する
 ##trueならば継続可能
 func can_continue_game() -> bool:
+	#消せるパネル現存チェック
 	for x in range(horizontal_count):
 		for y in range(vertical_count):
 			for z in range(z_count):
@@ -193,6 +196,11 @@ func calcurate_score(count: int) -> void:
 	var score = (count -1 ) ** 2
 	Global.total_score += score
 	total_score_label.text = "%8d"%Global.total_score
+	
+	var ins := score_popup_screen.instantiate() as ScoreDisplay
+	$PopupLayer.add_child(ins)
+	ins.global_position = mouse_position - Vector2(20, 50)
+	ins.set_scores(count, score)
 	#print("%d:%d"%[score, Global.total_score])
 
 
