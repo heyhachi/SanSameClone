@@ -2,7 +2,7 @@ class_name GameOverScreen
 extends Control
 
 func _ready() -> void:
-	%ScoreLabel.text = "%4d"%Global.total_score
+	%ScoreLabel.text = "%8dpts"%Global.total_score
 	%RetryButton.pressed.connect(
 		func () -> void:
 			get_tree().reload_current_scene()

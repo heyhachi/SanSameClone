@@ -2,7 +2,7 @@ class_name MainLevel
 extends Node2D
 
 ##パネルを並べる際の原点となる座標
-@onready var panel_layout_base: Marker2D = $PanelLayoutBase
+@onready var panel_layout_base: Marker2D = $FieldLayer/PanelLayoutBase
 ##入力受付無効期間用タイマー
 @onready var ignore_input_timer: Timer = $IgnoreInputTimer
 ##トータルスコア表示用ラベル
@@ -138,6 +138,7 @@ func hilight_panel() -> void:
 	query.collide_with_areas = true
 	query.collide_with_bodies = false
 	query.collision_mask = 0x1
+	query.canvas_instance_id = $FieldLayer.get_instance_id()
 	query.exclude = [self]
 
 	#検出したノード
