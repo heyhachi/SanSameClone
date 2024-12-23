@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5eicjaijuxns"]
+
+[ext_resource type="Script" path="res://Screens/license_screen.gd" id="1_5sdte"]
+[ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="2_0tykt"]
+
+[node name="LicenseScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 296.0
+offset_top = 72.0
+offset_right = -324.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_5sdte")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.803922)
+
+[node name="LicenseLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 659.0
+offset_bottom = 518.0
+
+[node name="CloseButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -68.0
+offset_right = 80.0
+offset_bottom = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_0tykt")
+theme_override_font_sizes/font_size = 20
+text = "閉じる"
