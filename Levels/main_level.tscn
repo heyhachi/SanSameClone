@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cxouojmpexg37"]
 
 [ext_resource type="Script" path="res://Levels/main_level.gd" id="1_hsqw3"]
-[ext_resource type="FontFile" uid="uid://cacfkuchvmb28" path="res://Assets/Fonts/Xolonium-Regular.ttf" id="2_01nyn"]
+[ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="2_blccv"]
 
 [node name="MainLevel" type="Node2D"]
 script = ExtResource("1_hsqw3")
@@ -14,16 +14,44 @@ one_shot = true
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer"]
+[node name="Control" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 25.0
+offset_right = -70.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/Control"]
+layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = -43.0
+offset_right = 100.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TotalScoreLabel" type="Label" parent="UILayer/HBoxContainer"]
+[node name="Label" type="Label" parent="UILayer/Control/HBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_01nyn")
+theme_override_fonts/font = ExtResource("2_blccv")
 theme_override_font_sizes/font_size = 30
 text = "SCORE"
+
+[node name="VSeparator" type="VSeparator" parent="UILayer/Control/HBoxContainer"]
+layout_mode = 2
+
+[node name="TotalScoreLabel" type="Label" parent="UILayer/Control/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_blccv")
+theme_override_font_sizes/font_size = 30
+text = "SCORE"
+
+[node name="ScreenLayer" type="CanvasLayer" parent="."]

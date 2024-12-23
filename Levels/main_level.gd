@@ -5,8 +5,10 @@ extends Node2D
 @onready var panel_layout_base: Marker2D = $PanelLayoutBase
 ##入力受付無効期間用タイマー
 @onready var ignore_input_timer: Timer = $IgnoreInputTimer
-##トータルスコア表示ようラベル
-@onready var total_score_label: Label = $UILayer/HBoxContainer/TotalScoreLabel
+##トータルスコア表示用ラベル
+@onready var total_score_label: Label = %TotalScoreLabel
+##各種スクリーン表示用レイヤー
+@onready var screen_layer: CanvasLayer = $ScreenLayer
 
 ##グリッドの横幅
 @export var horizontal_count := 10
@@ -27,12 +29,16 @@ var selected_panels: Array[PanelItem] = []
 var can_input := true
 ##ゲームオーバーかどうか
 var is_game_over := false
+##ゲームオーバースクリーン
+var game_over_screen: PackedScene = preload("res://Screens/gameover_screen.tscn")
+
 
 func _ready() -> void:
 	randomize()
 	total_score_label.text = "%8d"%Global.total_score
 	# 3次元配列を初期化
 	init_field()
+	Global.initialize()
 	# フィールドサイズ確認
 	print("x,y,z:%d,%d,%d" % [panel_grid.size(), panel_grid[0].size(), panel_grid[0][0].size()])
 	
@@ -84,6 +90,9 @@ func _process(_delta: float) -> void:
 		print("もう消せるパネルはありません")
 		set_process(false)
 		set_physics_process(false)
+		var gos = game_over_screen.instantiate() as GameOverScreen
+		if gos != null:
+			screen_layer.add_child(gos)
 
 
 ##ゲームが継続可能かどうか判定する

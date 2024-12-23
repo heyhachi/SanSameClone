@@ -19,3 +19,7 @@ const PANEL_LAYER_OFFSET := 12
 var hi_score: int = 0
 ##スコア
 var total_score: int = 0
+
+func initialize() -> void:
+	hi_score = 0
+	total_score = 0

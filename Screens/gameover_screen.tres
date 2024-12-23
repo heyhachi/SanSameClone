@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://mf3u48yta16g"]
+
+[ext_resource type="FontFile" uid="uid://op2nkvd6vdji" path="res://Assets/Fonts/rounded-mplus-1p-regular.ttf" id="1_23no3"]
+
+[resource]
+Button/font_sizes/font_size = 30
+Button/fonts/font = ExtResource("1_23no3")
