@@ -23,3 +23,6 @@ var total_score: int = 0
 func initialize() -> void:
 	hi_score = 0
 	total_score = 0
+	
+func clear() -> void:
+	total_score = 0

@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://cxouojmpexg37"]
+[gd_scene load_steps=6 format=3 uid="uid://cxouojmpexg37"]
 
 [ext_resource type="Script" path="res://Levels/main_level.gd" id="1_hsqw3"]
 [ext_resource type="Shader" path="res://Levels/line_scroll.gdshader" id="2_0v6qd"]
 [ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="2_blccv"]
+[ext_resource type="AudioStream" uid="uid://c62xlwhwabdyv" path="res://Assets/SE/SNES-Fighting06-14(Select).mp3" id="4_688i0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4waks"]
 shader = ExtResource("2_0v6qd")
@@ -83,3 +84,6 @@ theme_override_font_sizes/font_size = 30
 text = "SCORE"
 
 [node name="ScreenLayer" type="CanvasLayer" parent="."]
+
+[node name="Se" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_688i0")

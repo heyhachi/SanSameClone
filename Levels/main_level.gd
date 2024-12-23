@@ -9,6 +9,8 @@ extends Node2D
 @onready var total_score_label: Label = %TotalScoreLabel
 ##各種スクリーン表示用レイヤー
 @onready var screen_layer: CanvasLayer = $ScreenLayer
+##SE再生用
+@onready var se: AudioStreamPlayer = $Se
 
 ##グリッドの横幅
 @export var horizontal_count := 10
@@ -72,6 +74,8 @@ func init_field() -> void:
 						item.color = color
 						item.grid_position += Vector3(x, y, z)
 						item.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0))
+						var z_scale = 1 - z * 0.1
+						item.scale = Vector2(z_scale, z_scale)
 						item.z_index = z_count - z
 						item.get_panel.connect(func(pos: Vector3) -> void: panel_grid[pos.x][pos.y][pos.z] = null)
 				z_array.append(item)
@@ -182,6 +186,7 @@ func on_panel_clicked() -> void:
 	for i in selected_panels:
 		i.queue_free()
 	
+	se.play()
 	can_input = false
 	set_process_input(false)
 	ignore_input_timer.wait_time = 1.0
@@ -226,6 +231,8 @@ func move_inside() -> void:
 				var upper_z = z - 1
 				if panel_grid[x][y][z] == null and panel_grid[x][y][upper_z] != null:
 					var panel = panel_grid[x][y][upper_z]
+					var z_scale = 1 - z * 0.1
+					panel.scale = Vector2(z_scale, z_scale)
 					panel.z_index -= 1
 					panel.grid_position += Vector3(0, 0, 1)
 					panel.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0), false)
