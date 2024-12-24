@@ -4,7 +4,7 @@ extends Node2D
 ## ゲーム全体の管理を行う
 
 ##パネルを並べる際の原点となる座標
-@onready var panel_layout_base: Marker2D = $FieldLayer/PanelLayoutBase
+@onready var panel_layout_base: Marker2D = %PanelLayoutBase
 ##入力受付無効期間用タイマー
 @onready var ignore_input_timer: Timer = $IgnoreInputTimer
 ##トータルスコア表示用ラベル

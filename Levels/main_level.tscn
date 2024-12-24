@@ -58,6 +58,7 @@ offset_bottom = 640.0
 [node name="FieldLayer" type="CanvasLayer" parent="."]
 
 [node name="PanelLayoutBase" type="Marker2D" parent="FieldLayer"]
+unique_name_in_owner = true
 position = Vector2(112, 21)
 
 [node name="IgnoreInputTimer" type="Timer" parent="."]
