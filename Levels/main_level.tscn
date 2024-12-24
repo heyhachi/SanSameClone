@@ -44,7 +44,7 @@ grow_vertical = 2
 [node name="ColorRect" type="ColorRect" parent="FieldLayer2"]
 material = SubResource("ShaderMaterial_r0hj4")
 offset_left = 56.0
-offset_right = 1240.0
+offset_right = 1224.0
 offset_bottom = 576.0
 color = Color(1, 1, 1, 0)
 
@@ -58,7 +58,7 @@ offset_bottom = 640.0
 [node name="FieldLayer" type="CanvasLayer" parent="."]
 
 [node name="PanelLayoutBase" type="Marker2D" parent="FieldLayer"]
-position = Vector2(130, 21)
+position = Vector2(112, 21)
 
 [node name="IgnoreInputTimer" type="Timer" parent="."]
 one_shot = true
