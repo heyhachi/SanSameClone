@@ -180,7 +180,7 @@ func hilight_panel() -> void:
 	
 	for v in chained:
 		#下から10段を有効エリアとする
-		if v.y < horizontal_count - 10: continue
+		if v.y < vertical_count - 10: continue
 		panel_grid[v.x][v.y][v.z].modulate = Color(0.5,0.5,0.5)
 		selected_panels.append(panel_grid[v.x][v.y][v.z])
 

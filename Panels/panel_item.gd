@@ -71,6 +71,7 @@ func update_position(tile_size: int, offset: Vector3 = Vector3.ZERO, is_instant:
 		if _tween != null and _tween.is_running():
 			_tween.stop()
 		_tween = create_tween()
+		_tween.set_parallel(true)
 		_tween.tween_property(self, "position", desired_pos, 0.2)
 		_tween.play()
 
