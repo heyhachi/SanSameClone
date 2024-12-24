@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://Levels/main_level.gd" id="1_hsqw3"]
 [ext_resource type="Shader" path="res://Levels/line_scroll.gdshader" id="2_0v6qd"]
-[ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="2_blccv"]
 [ext_resource type="Shader" path="res://Shaders/discrete_ocean.gdshader" id="3_kc2ev"]
 [ext_resource type="AudioStream" uid="uid://c62xlwhwabdyv" path="res://Assets/SE/SNES-Fighting06-14(Select).mp3" id="4_688i0"]
+[ext_resource type="Theme" uid="uid://djxvwym0yx1ls" path="res://Screens/score_ui_theme.tres" id="4_buhxp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4waks"]
 shader = ExtResource("2_0v6qd")
@@ -78,36 +78,44 @@ offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/Control"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 768.0
-offset_top = -661.0
-offset_right = 82.0
-offset_bottom = -618.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/Control"]
+layout_mode = 0
+offset_left = 774.0
+offset_top = 27.0
+offset_right = 1075.0
+offset_bottom = 117.0
 
-[node name="Label" type="Label" parent="UILayer/Control/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/Control/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("2_blccv")
-theme_override_font_sizes/font_size = 30
+
+[node name="Label" type="Label" parent="UILayer/Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("4_buhxp")
 text = "SCORE"
 
-[node name="VSeparator" type="VSeparator" parent="UILayer/Control/HBoxContainer"]
-layout_mode = 2
-
-[node name="TotalScoreLabel" type="Label" parent="UILayer/Control/HBoxContainer"]
+[node name="TotalScoreLabel" type="Label" parent="UILayer/Control/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("2_blccv")
-theme_override_font_sizes/font_size = 30
-text = "SCORE"
+size_flags_horizontal = 6
+theme = ExtResource("4_buhxp")
+text = "00000"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/Control/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("4_buhxp")
+text = "HI-SCORE"
+
+[node name="HiScoreLabel" type="Label" parent="UILayer/Control/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+theme = ExtResource("4_buhxp")
+text = "00000"
 
 [node name="ScreenLayer" type="CanvasLayer" parent="."]
 

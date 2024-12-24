@@ -42,10 +42,12 @@ var score_popup_screen: PackedScene = preload("res://Screens/score_display.tscn"
 
 func _ready() -> void:
 	randomize()
+	Global.initialize()
+	Global.load_game()
 	total_score_label.text = "%8dpts"%Global.total_score
+	%HiScoreLabel.text = "%8dpts"%Global.hi_score
 	# 3次元配列を初期化
 	init_field()
-	Global.initialize()
 	# フィールドサイズ確認
 	print("x,y,z:%d,%d,%d" % [panel_grid.size(), panel_grid[0].size(), panel_grid[0][0].size()])
 	
@@ -106,6 +108,7 @@ func _process(_delta: float) -> void:
 	if !can_continue_game():
 		is_game_over = true
 		print("もう消せるパネルはありません")
+		Global.save_game()
 		set_process(false)
 		set_physics_process(false)
 		var gos = game_over_screen.instantiate() as GameOverScreen
@@ -217,6 +220,9 @@ func calcurate_score(count: int) -> void:
 	var score = (count -1 ) ** 2
 	Global.total_score += score
 	total_score_label.text = "%8d"%Global.total_score
+	if Global.total_score > Global.hi_score:
+		Global.hi_score = Global.total_score
+		%HiScoreLabel.text = "%8d"%Global.hi_score
 	
 	var ins := score_popup_screen.instantiate() as ScoreDisplay
 	$PopupLayer.add_child(ins)
@@ -231,6 +237,7 @@ func get_random_color() -> Global.PanelColor:
 	if Global.difficulty == Global.Difficulty.EASY:
 		div_value -= 1
 	return randi_range(1, div_value) as Global.PanelColor
+	#return randi_range(1, 2) as Global.PanelColor
 
 
 ##任意のセルにパネルが存在するかどうか。[br]

@@ -1,0 +1,13 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://djxvwym0yx1ls"]
+
+[ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="1_3ua0i"]
+
+[resource]
+default_font = ExtResource("1_3ua0i")
+default_font_size = 30
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.780392)
+Label/constants/outline_size = 4
+Label/constants/shadow_offset_x = 3
+Label/constants/shadow_offset_y = 3
+Label/font_sizes/font_size = 30
+Label/fonts/font = ExtResource("1_3ua0i")
