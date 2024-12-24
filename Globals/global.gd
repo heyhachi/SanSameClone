@@ -17,7 +17,7 @@ enum Difficulty {
 }
 
 ##グリッドのセルのサイズ
-const PANEL_SIZE := 64
+const PANEL_SIZE := 56
 ##パネルを重ねる際のオフセット
 const PANEL_LAYER_OFFSET := 12
 

@@ -26,7 +26,8 @@ shader_parameter/total_phases = 6
 
 [node name="MainLevel" type="Node2D"]
 script = ExtResource("1_hsqw3")
-vertical_count = 20
+horizontal_count = 20
+vertical_count = 15
 
 [node name="BgLayer" type="CanvasLayer" parent="."]
 
@@ -43,8 +44,8 @@ grow_vertical = 2
 [node name="ColorRect" type="ColorRect" parent="FieldLayer2"]
 material = SubResource("ShaderMaterial_r0hj4")
 offset_left = 56.0
-offset_right = 760.0
-offset_bottom = 640.0
+offset_right = 1240.0
+offset_bottom = 576.0
 color = Color(1, 1, 1, 0)
 
 [node name="ColorRect2" type="ColorRect" parent="FieldLayer2"]
@@ -80,10 +81,10 @@ grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/Control"]
 layout_mode = 0
-offset_left = 774.0
-offset_top = 27.0
-offset_right = 1075.0
-offset_bottom = 117.0
+offset_left = 441.0
+offset_top = 576.0
+offset_right = 742.0
+offset_bottom = 666.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/Control/VBoxContainer"]
 layout_mode = 2
