@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://c04d16cj5kwlq"]
+[gd_scene load_steps=7 format=3 uid="uid://c04d16cj5kwlq"]
 
 [ext_resource type="FontFile" uid="uid://bdutbheg1vt4j" path="res://Assets/Fonts/rounded-mplus-1p-heavy.ttf" id="1_86bll"]
 [ext_resource type="Script" path="res://Screens/title_screen.gd" id="1_c3pt5"]
 [ext_resource type="Shader" path="res://Levels/line_scroll.gdshader" id="2_7llom"]
+[ext_resource type="ButtonGroup" uid="uid://875h130l0hvb" path="res://Screens/difficulty_button_group.tres" id="4_3rluq"]
+[ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="4_y4bs0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_d2jtd"]
 shader = ExtResource("2_7llom")
@@ -53,14 +55,16 @@ text = "SAN SAME"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 468.0
 offset_top = -239.0
-offset_bottom = -146.0
+offset_right = -468.0
+offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
@@ -81,3 +85,28 @@ text = "ライセンス
 "
 
 [node name="LisenceLayer" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 468.0
+offset_top = 437.0
+offset_right = 636.0
+offset_bottom = 477.0
+
+[node name="CheckBoxEasy" type="CheckBox" parent="HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("4_y4bs0")
+theme_override_font_sizes/font_size = 20
+button_group = ExtResource("4_3rluq")
+text = "EASY"
+
+[node name="CheckBoxNormal" type="CheckBox" parent="HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("4_y4bs0")
+theme_override_font_sizes/font_size = 20
+button_group = ExtResource("4_3rluq")
+text = "NORMAL"

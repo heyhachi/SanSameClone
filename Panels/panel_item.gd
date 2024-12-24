@@ -1,8 +1,8 @@
 class_name PanelItem
 extends Area2D
 
-signal get_panel(pos: Vector3)
-signal select_panel(pos: Vector3)
+#signal get_panel(pos: Vector3)
+#signal select_panel(pos: Vector3)
 
 ## パネルのスプライト
 @onready var skin: Sprite2D = $Skin

@@ -89,7 +89,7 @@ func init_field() -> void:
 						var z_scale = 1 - z * 0.15
 						item.scale = Vector2(z_scale, z_scale)
 						item.z_index = z_count - z
-						item.get_panel.connect(func(pos: Vector3) -> void: panel_grid[pos.x][pos.y][pos.z] = null)
+						#item.get_panel.connect(func(pos: Vector3) -> void: panel_grid[pos.x][pos.y][pos.z] = null)
 				z_array.append(item)
 			y_array.append(z_array)
 		panel_grid.append(y_array)
@@ -227,7 +227,10 @@ func calcurate_score(count: int) -> void:
 
 ##ランダムなパネルの色を取得する
 func get_random_color() -> Global.PanelColor:
-	return randi_range(1, Global.PanelColor.size() - 1) as Global.PanelColor
+	var div_value = Global.PanelColor.size() - 1
+	if Global.difficulty == Global.Difficulty.EASY:
+		div_value -= 1
+	return randi_range(1, div_value) as Global.PanelColor
 
 
 ##任意のセルにパネルが存在するかどうか。[br]
