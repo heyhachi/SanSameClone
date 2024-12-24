@@ -17,8 +17,8 @@ shader_parameter/blur = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r0hj4"]
 shader = ExtResource("3_kc2ev")
-shader_parameter/bottom_color = Color(1, 0.699624, 0.223586, 1)
-shader_parameter/top_color = Color(0.931893, 0.88983, 0.151091, 1)
+shader_parameter/bottom_color = Color(0.314914, 0.4521, 0.33671, 1)
+shader_parameter/top_color = Color(0.280623, 0.361664, 0.332298, 1)
 shader_parameter/wave_amp = 0.025
 shader_parameter/wave_size = 3.072
 shader_parameter/wave_time_mul = 0.168
