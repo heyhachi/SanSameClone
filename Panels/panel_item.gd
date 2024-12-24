@@ -15,6 +15,10 @@ var color := Global.PanelColor.RED:
 var grid_position := Vector3.ZERO
 ## 移動アニメーション制御用Tween
 var _tween: Tween
+## デバッグ用のパネル番号
+var index := 0:
+	set = set_panel_index
+
 
 var textures = {
 	Global.PanelColor.EMPTY: null,
@@ -83,3 +87,8 @@ func set_color(new_color: Global.PanelColor) -> void:
 	
 func get_color_name() -> String:
 	return color_name[self.color]
+
+
+func set_panel_index(new_index: int) -> void:
+	index = new_index
+	%DebugLabel.text = "%03d"%index

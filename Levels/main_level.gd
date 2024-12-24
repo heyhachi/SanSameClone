@@ -12,12 +12,13 @@ extends Node2D
 ##SE再生用
 @onready var se: AudioStreamPlayer = $Se
 
+@export_group("グリッド設定")
 ##グリッドの横幅
-@export var horizontal_count := 10
+@export_range(10, 20) var horizontal_count := 10
 ##グリッドの縦幅
-@export var vertical_count := 10
+@export_range(10, 30) var vertical_count := 10
 ##グリッドの奥行き
-@export var z_count := 3
+@export_range(1, 3) var z_count := 3
 
 ##パネル用シーン
 var panel_scene: PackedScene = preload("res://Panels/panel_item.tscn")
@@ -60,6 +61,8 @@ func _ready() -> void:
 ##フィールドの初期化を行う
 ##全消し可能化どうかは考慮しない
 func init_field() -> void:
+	var start_pos_y = -((vertical_count - 10) * Global.PANEL_SIZE)
+	panel_layout_base.global_position += Vector2(0, start_pos_y)
 	for x in range(horizontal_count):
 		var y_array := []
 		for y in range(vertical_count):
@@ -73,8 +76,15 @@ func init_field() -> void:
 						panel_layout_base.add_child(item)
 						item.color = color
 						item.grid_position += Vector3(x, y, z)
-						item.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0))
-						var z_scale = 1 - z * 0.1
+						item.update_position(
+							Global.PANEL_SIZE, 
+							Vector3(
+								-z * Global.PANEL_LAYER_OFFSET, 
+								z * Global.PANEL_LAYER_OFFSET, 
+								0)
+							)
+						item.index = y
+						var z_scale = 1 - z * 0.15
 						item.scale = Vector2(z_scale, z_scale)
 						item.z_index = z_count - z
 						item.get_panel.connect(func(pos: Vector3) -> void: panel_grid[pos.x][pos.y][pos.z] = null)
@@ -104,9 +114,9 @@ func _process(_delta: float) -> void:
 ##ゲームが継続可能かどうか判定する
 ##trueならば継続可能
 func can_continue_game() -> bool:
-	#消せるパネル現存チェック
+	#消せるパネル現存チェック(画面外のパネルは対象外)
 	for x in range(horizontal_count):
-		for y in range(vertical_count):
+		for y in range(vertical_count - 10, vertical_count):
 			for z in range(z_count):
 				if is_same_color_adjacent(x,y,z):
 					return true
@@ -169,6 +179,8 @@ func hilight_panel() -> void:
 		visited)
 	
 	for v in chained:
+		#下から10段を有効エリアとする
+		if v.y < horizontal_count - 10: continue
 		panel_grid[v.x][v.y][v.z].modulate = Color(0.5,0.5,0.5)
 		selected_panels.append(panel_grid[v.x][v.y][v.z])
 
@@ -225,13 +237,13 @@ func is_cell_occupied(x: int, y: int, z: int) -> bool:
 ## パネルを奥方向へスライド
 func move_inside() -> void:
 	for x in panel_grid.size():
-		for y in panel_grid[0].size():
+		for y in vertical_count:
 			for z in range(panel_grid[0][0].size() - 1, 0, -1):
 				#奥方向への移動
 				var upper_z = z - 1
 				if panel_grid[x][y][z] == null and panel_grid[x][y][upper_z] != null:
 					var panel = panel_grid[x][y][upper_z]
-					var z_scale = 1 - z * 0.1
+					var z_scale = 1 - z * 0.15
 					panel.scale = Vector2(z_scale, z_scale)
 					panel.z_index -= 1
 					panel.grid_position += Vector3(0, 0, 1)

@@ -31,7 +31,7 @@ grow_vertical = 2
 [node name="FieldLayer" type="CanvasLayer" parent="."]
 
 [node name="PanelLayoutBase" type="Marker2D" parent="FieldLayer"]
-position = Vector2(130, -620)
+position = Vector2(130, 21)
 
 [node name="IgnoreInputTimer" type="Timer" parent="."]
 one_shot = true
@@ -58,10 +58,10 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 725.0
-offset_top = -396.0
-offset_right = 39.0
-offset_bottom = -353.0
+offset_left = 768.0
+offset_top = -661.0
+offset_right = 82.0
+offset_bottom = -618.0
 grow_horizontal = 2
 grow_vertical = 0
 
