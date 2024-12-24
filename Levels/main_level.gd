@@ -1,6 +1,8 @@
 class_name MainLevel
 extends Node2D
 
+## ゲーム全体の管理を行う
+
 ##パネルを並べる際の原点となる座標
 @onready var panel_layout_base: Marker2D = $FieldLayer/PanelLayoutBase
 ##入力受付無効期間用タイマー
@@ -58,7 +60,7 @@ func _ready() -> void:
 	
 
 
-##フィールドの初期化を行う
+##フィールドの初期化を行う[br]
 ##全消し可能化どうかは考慮しない
 func init_field() -> void:
 	var start_pos_y = -((vertical_count - 10) * Global.PANEL_SIZE)
@@ -111,7 +113,7 @@ func _process(_delta: float) -> void:
 			screen_layer.add_child(gos)
 
 
-##ゲームが継続可能かどうか判定する
+##ゲームが継続可能かどうか判定する[br]
 ##trueならば継続可能
 func can_continue_game() -> bool:
 	#消せるパネル現存チェック(画面外のパネルは対象外)
@@ -209,7 +211,8 @@ func on_panel_clicked() -> void:
 			set_process_input(true)
 	)
 
-
+## スコアを計算する[br]
+## 消去したパネルの数を[param count]に指定する。
 func calcurate_score(count: int) -> void:
 	var score = (count -1 ) ** 2
 	Global.total_score += score
@@ -227,7 +230,8 @@ func get_random_color() -> Global.PanelColor:
 	return randi_range(1, Global.PanelColor.size() - 1) as Global.PanelColor
 
 
-##任意のセルにパネルが存在するかどうか
+##任意のセルにパネルが存在するかどうか。[br]
+##グリッド上の位置を[param x]、[param y]、[param z]で指定する
 func is_cell_occupied(x: int, y: int, z: int) -> bool:
 	if x < 0 or x >= horizontal_count or y < 0 or y >= vertical_count or z < 0 or z >= z_count:
 		return true
@@ -267,7 +271,9 @@ func move_down() -> void:
 					panel_grid[x][up_y][z] = null
 
 
-## 任意の列が空どうか
+## 任意の列が空どうか[br]
+## [param index]で指定した列が空になっているかを判定する。[br]
+## trueが返ってきたら空列
 func is_empty_column(index: int) -> bool:
 	for y in panel_grid[0].size():
 		for z in panel_grid[0][0].size():
@@ -295,7 +301,8 @@ func move_left() -> void:
 					panel_grid[right_x][y][z] = null
 
 
-##隣接する同色パネルがあるかどうか
+##隣接する同色パネルがあるかどうか[br]
+##グリッド上の位置を[param x]、[param y]、[param z]で指定する
 func is_same_color_adjacent(x: int, y: int, z: int) -> bool:
 	# 配列の範囲外チェック
 	if x < 0 or x >= horizontal_count or y < 0 or y >= vertical_count or z < 0 or z >= z_count:
@@ -336,7 +343,9 @@ func is_same_color_adjacent(x: int, y: int, z: int) -> bool:
 	return false  # 隣接する同じ色のパネルがない場合
 
 
-## 隣接するパネルを再帰的に収集する
+## 隣接するパネルを再帰的に収集する。[br]
+##グリッド上の位置を[param x]、[param y]、[param z]で指定する[br]
+## 探訪済みのパネルが[param visited]に格納される。[br]
 func check_adjacent_chain(x: int, y: int, z: int, visited: Dictionary = {}) -> Array:
 	# 配列範囲外チェック、または訪問済みの座標はスキップ
 	if x < 0 or x >= horizontal_count or y < 0 or y >= vertical_count or z < 0 or z >= z_count:

@@ -20,6 +20,7 @@ var index := 0:
 	set = set_panel_index
 
 
+##色毎のテクスチャ
 var textures = {
 	Global.PanelColor.EMPTY: null,
 	Global.PanelColor.RED: preload("res://Assets/Panels/element_red_square_glossy.png"),
@@ -29,6 +30,7 @@ var textures = {
 	Global.PanelColor.WHITE: preload("res://Assets/Panels/element_grey_square_glossy.png"),
 }
 
+##デバッグ用の色名
 var color_name = {
 	Global.PanelColor.EMPTY: "空",
 	Global.PanelColor.RED: "赤",
@@ -60,6 +62,9 @@ func _ready() -> void:
 	pass
 
 
+##指定した座標へ更新する[br]
+##[param tile_size]でしていたサイズを1セルとして、[param offset]分ずらして表示する。[br]
+##[param is_instant]をtrueで指定するとTweenアニメーションせずに移動する。
 func update_position(tile_size: int, offset: Vector3 = Vector3.ZERO, is_instant: bool = true) -> void:
 	var pos = Vector2(grid_position.x, grid_position.y)
 	var offs = Vector2(offset.x, offset.y)
@@ -76,20 +81,26 @@ func update_position(tile_size: int, offset: Vector3 = Vector3.ZERO, is_instant:
 		_tween.play()
 
 
+## 下方向へ移動
 func move_down() -> void:
 	grid_position.y += 1
 	update_position(Global.PANEL_SIZE, Vector3(-grid_position.z * Global.PANEL_LAYER_OFFSET, grid_position.z * Global.PANEL_LAYER_OFFSET, grid_position.z))
 
 
+## 色を設定する[br]
+##[param new_color]で指定した色のテクスチャが設定される。
 func set_color(new_color: Global.PanelColor) -> void:
 	color = new_color
 	skin.texture = textures[new_color]
 	
-	
+
+## 色名を取得する
 func get_color_name() -> String:
 	return color_name[self.color]
 
 
+## パネルにインデックスを設定する[br]
+## 現状はデバッグ用
 func set_panel_index(new_index: int) -> void:
 	index = new_index
 	%DebugLabel.text = "%03d"%index

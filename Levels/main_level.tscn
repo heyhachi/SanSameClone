@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cxouojmpexg37"]
+[gd_scene load_steps=8 format=3 uid="uid://cxouojmpexg37"]
 
 [ext_resource type="Script" path="res://Levels/main_level.gd" id="1_hsqw3"]
 [ext_resource type="Shader" path="res://Levels/line_scroll.gdshader" id="2_0v6qd"]
 [ext_resource type="FontFile" uid="uid://diyi528k2kk5v" path="res://Assets/Fonts/rounded-mplus-1p-bold.ttf" id="2_blccv"]
+[ext_resource type="Shader" path="res://Shaders/discrete_ocean.gdshader" id="3_kc2ev"]
 [ext_resource type="AudioStream" uid="uid://c62xlwhwabdyv" path="res://Assets/SE/SNES-Fighting06-14(Select).mp3" id="4_688i0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4waks"]
@@ -13,6 +14,15 @@ shader_parameter/angle = 60.0
 shader_parameter/line_count = 40.0
 shader_parameter/speed = 1.0
 shader_parameter/blur = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r0hj4"]
+shader = ExtResource("3_kc2ev")
+shader_parameter/bottom_color = Color(1, 0.699624, 0.223586, 1)
+shader_parameter/top_color = Color(0.931893, 0.88983, 0.151091, 1)
+shader_parameter/wave_amp = 0.025
+shader_parameter/wave_size = 3.072
+shader_parameter/wave_time_mul = 0.168
+shader_parameter/total_phases = 6
 
 [node name="MainLevel" type="Node2D"]
 script = ExtResource("1_hsqw3")
@@ -27,6 +37,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="FieldLayer2" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="FieldLayer2"]
+material = SubResource("ShaderMaterial_r0hj4")
+offset_left = 56.0
+offset_right = 760.0
+offset_bottom = 640.0
+color = Color(1, 1, 1, 0)
+
+[node name="ColorRect2" type="ColorRect" parent="FieldLayer2"]
+visible = false
+material = SubResource("ShaderMaterial_r0hj4")
+offset_left = 56.0
+offset_right = 760.0
+offset_bottom = 640.0
 
 [node name="FieldLayer" type="CanvasLayer" parent="."]
 
