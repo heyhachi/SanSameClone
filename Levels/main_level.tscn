@@ -4,7 +4,7 @@
 [ext_resource type="Shader" path="res://Levels/line_scroll.gdshader" id="2_0v6qd"]
 [ext_resource type="Shader" path="res://Shaders/discrete_ocean.gdshader" id="3_kc2ev"]
 [ext_resource type="AudioStream" uid="uid://c62xlwhwabdyv" path="res://Assets/SE/SNES-Fighting06-14(Select).mp3" id="4_688i0"]
-[ext_resource type="Theme" uid="uid://djxvwym0yx1ls" path="res://Screens/score_ui_theme.tres" id="4_buhxp"]
+[ext_resource type="Theme" path="res://Screens/score_ui_theme.tres" id="4_buhxp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4waks"]
 shader = ExtResource("2_0v6qd")
