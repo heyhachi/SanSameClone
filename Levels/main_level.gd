@@ -100,11 +100,20 @@ func init_field() -> void:
 func _process(_delta: float) -> void:
 	if is_game_over:
 		return
+		
+	#mouse_position = get_global_mouse_position()
+	mouse_position = get_viewport().get_mouse_position()
+	#グリッドを更新してパネルを移動する
+	update_grid()
+
+	
+
+##グリッド情報を更新しパネルを移動する
+func update_grid() -> void:
 	move_inside()
 	move_down()
 	move_left()
-	#mouse_position = get_global_mouse_position()
-	mouse_position = get_viewport().get_mouse_position()
+	
 	if !can_continue_game():
 		is_game_over = true
 		print("もう消せるパネルはありません")
@@ -136,6 +145,7 @@ func _physics_process(_delta: float) -> void:
 	
 	if Input.is_action_just_pressed("panel_decision"):
 		on_panel_clicked()
+	
 
 
 ##カーソル下のパネルと、それと一緒に消せるパネルをハイライトする
@@ -213,17 +223,19 @@ func on_panel_clicked() -> void:
 			can_input = true
 			set_process_input(true)
 	)
+	
+	
 
 ## スコアを計算する[br]
 ## 消去したパネルの数を[param count]に指定する。
 func calcurate_score(count: int) -> void:
 	var score = (count -1 ) ** 2
 	Global.total_score += score
-	total_score_label.text = "%8d"%Global.total_score
+	total_score_label.text = "%8dpts"%Global.total_score
 	if Global.total_score > Global.hi_score:
 		Global.hi_score = Global.total_score
-		%HiScoreLabel.text = "%8d"%Global.hi_score
-	
+		%HiScoreLabel.text = "%8dpts"%Global.hi_score
+		
 	var ins := score_popup_screen.instantiate() as ScoreDisplay
 	$PopupLayer.add_child(ins)
 	ins.global_position = mouse_position - Vector2(20, 50)
