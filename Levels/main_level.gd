@@ -44,22 +44,21 @@ func _ready() -> void:
 	randomize()
 	Global.initialize()
 	Global.load_game()
-	total_score_label.text = "%8dpts"%Global.total_score
-	%HiScoreLabel.text = "%8dpts"%Global.hi_score
+	total_score_label.text = "%8dpts" % Global.total_score
+	%HiScoreLabel.text = "%8dpts" % Global.hi_score
 	# 3次元配列を初期化
 	init_field()
 	# フィールドサイズ確認
 	print("x,y,z:%d,%d,%d" % [panel_grid.size(), panel_grid[0].size(), panel_grid[0][0].size()])
-	
+
 	#var arr = [3,4,1,5,9]
 	#arr.sort_custom(
-		#func(a: int, b: int) -> bool:
-			#if a < b:
-				#return true
-			#return false
+	#func(a: int, b: int) -> bool:
+	#if a < b:
+	#return true
+	#return false
 	#)
 	#print(arr)
-	
 
 
 ##フィールドの初期化を行う[br]
@@ -80,13 +79,7 @@ func init_field() -> void:
 						panel_layout_base.add_child(item)
 						item.color = color
 						item.grid_position += Vector3(x, y, z)
-						item.update_position(
-							Global.PANEL_SIZE, 
-							Vector3(
-								-z * Global.PANEL_LAYER_OFFSET, 
-								z * Global.PANEL_LAYER_OFFSET, 
-								0)
-							)
+						item.update_position(Global.PANEL_SIZE, Vector3(-z * Global.PANEL_LAYER_OFFSET, z * Global.PANEL_LAYER_OFFSET, 0))
 						item.index = y
 						var z_scale = 1 - z * 0.15
 						item.scale = Vector2(z_scale, z_scale)
@@ -100,20 +93,19 @@ func init_field() -> void:
 func _process(_delta: float) -> void:
 	if is_game_over:
 		return
-		
+
 	#mouse_position = get_global_mouse_position()
 	mouse_position = get_viewport().get_mouse_position()
 	#グリッドを更新してパネルを移動する
 	update_grid()
 
-	
 
 ##グリッド情報を更新しパネルを移動する
 func update_grid() -> void:
 	move_inside()
 	move_down()
 	move_left()
-	
+
 	if !can_continue_game():
 		is_game_over = true
 		print("もう消せるパネルはありません")
@@ -132,7 +124,7 @@ func can_continue_game() -> bool:
 	for x in range(horizontal_count):
 		for y in range(vertical_count - 10, vertical_count):
 			for z in range(z_count):
-				if is_same_color_adjacent(x,y,z):
+				if is_same_color_adjacent(x, y, z):
 					return true
 	return false
 
@@ -140,19 +132,18 @@ func can_continue_game() -> bool:
 func _physics_process(_delta: float) -> void:
 	if is_game_over:
 		return
-		
+
 	hilight_panel()
-	
+
 	if Input.is_action_just_pressed("panel_decision"):
 		on_panel_clicked()
-	
 
 
 ##カーソル下のパネルと、それと一緒に消せるパネルをハイライトする
 func hilight_panel() -> void:
 	selected_panels.clear()
 	#if !can_input: return
-	
+
 	#ハイライトクリア
 	for x in horizontal_count:
 		for y in vertical_count:
@@ -160,7 +151,7 @@ func hilight_panel() -> void:
 				var panel = panel_grid[x][y][z]
 				if panel != null:
 					panel.modulate = 0xFFFFFFFF
-	
+
 	var space_state := get_world_2d().direct_space_state
 	var query := PhysicsPointQueryParameters2D.new()
 	query.position = mouse_position
@@ -172,31 +163,29 @@ func hilight_panel() -> void:
 
 	#検出したノード
 	var result := space_state.intersect_point(query)
-	if result == null or result.size() == 0: return
-	
+	if result == null or result.size() == 0:
+		return
+
 	var colliders: Array[PanelItem] = []
 	for i in result:
 		if i.collider is PanelItem:
 			colliders.append(i.collider)
-				
+
 	#grid_positionのZ座標でソートする
 	colliders.sort_custom(
-		func(a:PanelItem, b:PanelItem) -> bool:
+		func(a: PanelItem, b: PanelItem) -> bool:
 			if a.grid_position.z < b.grid_position.z:
 				return true
 			return false
 	)
 	var visited := {}
-	var chained := check_adjacent_chain(
-		colliders[0].grid_position.x as int, 
-		colliders[0].grid_position.y as int, 
-		colliders[0].grid_position.z as int,
-		visited)
-	
+	var chained := check_adjacent_chain(colliders[0].grid_position.x as int, colliders[0].grid_position.y as int, colliders[0].grid_position.z as int, visited)
+
 	for v in chained:
 		#下から10段を有効エリアとする
-		if v.y < vertical_count - 10: continue
-		panel_grid[v.x][v.y][v.z].modulate = Color(0.5,0.5,0.5)
+		if v.y < vertical_count - 10:
+			continue
+		panel_grid[v.x][v.y][v.z].modulate = Color(0.5, 0.5, 0.5)
 		selected_panels.append(panel_grid[v.x][v.y][v.z])
 
 
@@ -204,15 +193,15 @@ func hilight_panel() -> void:
 func on_panel_clicked() -> void:
 	if can_input == false:
 		return
-	
+
 	#同色2個以上で消去可能
 	if selected_panels.size() <= 1:
 		return
-		
+
 	calcurate_score(selected_panels.size())
 	for i in selected_panels:
 		i.queue_free()
-	
+
 	se.play()
 	can_input = false
 	set_process_input(false)
@@ -223,19 +212,18 @@ func on_panel_clicked() -> void:
 			can_input = true
 			set_process_input(true)
 	)
-	
-	
+
 
 ## スコアを計算する[br]
 ## 消去したパネルの数を[param count]に指定する。
 func calcurate_score(count: int) -> void:
-	var score = (count -1 ) ** 2
+	var score = (count - 1) ** 2
 	Global.total_score += score
-	total_score_label.text = "%8dpts"%Global.total_score
+	total_score_label.text = "%8dpts" % Global.total_score
 	if Global.total_score > Global.hi_score:
 		Global.hi_score = Global.total_score
-		%HiScoreLabel.text = "%8dpts"%Global.hi_score
-		
+		%HiScoreLabel.text = "%8dpts" % Global.hi_score
+
 	var ins := score_popup_screen.instantiate() as ScoreDisplay
 	$PopupLayer.add_child(ins)
 	ins.global_position = mouse_position - Vector2(20, 50)
