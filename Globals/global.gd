@@ -39,7 +39,7 @@ func initialize() -> void:
 	_hi_score[Global.Difficulty.EASY] = 0
 	_hi_score[Global.Difficulty.NORMAL] = 0
 	total_score = 0
-	difficulty = Difficulty.NORMAL
+	#difficulty = Difficulty.NORMAL
 
 
 ##ハイスコアを格納。[br]
